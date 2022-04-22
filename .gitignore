@@ -1,0 +1,30 @@
+# Ignore temporary files
+tmp/
+
+# Ignore development databases
+*.db
+
+# Ignore Node.js artifacts
+node_modules/
+npm-debug.log
+lerna-debug.log
+yarn-error.log
+
+# Ignore TypeScript intermediates
+tsconfig.tsbuildinfo
+dist/
+
+# Build artifacts
+build/
+build
+builds/
+
+# Terraform artifacts
+.terraform/
+dist.zip
+*.tfstate.backup
+.terraform.tfstate.lock.info
+
+# Environment files
+.env
+**/.npmrc
