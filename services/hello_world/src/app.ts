@@ -1,12 +1,13 @@
-export const lambdaHandler = async() => {
-  return { 
+import MidPassFetcher from "./fetchers/MidPassFetcher"
+export const lambdaHandler = async () => {
+  const statusFetcher = new MidPassFetcher(process.env.APPLICATION_ID);
+  const newStatusObject = await statusFetcher.getStatus();
+  return {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'text/html',
-    },
-    body:  'Hello World',
-  }
+    body: JSON.stringify({
+      newStatusObject
+    }),
+  };
 }
 
 lambdaHandler()
