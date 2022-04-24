@@ -1,4 +1,5 @@
 variable "global_name" { default = "hello_world" }
+variable "table_name" { default = "passport_status" }
 variable "application_id" { }
 terraform {
   required_providers { 
@@ -15,7 +16,6 @@ provider "aws" {
   profile = "default"
   region  = "eu-central-1"
 }
-
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
@@ -114,4 +114,16 @@ resource "aws_lambda_function_url" "lambda" {
 
 output "base_url" {
   value = aws_lambda_function_url.lambda.function_url
+}
+
+resource "aws_dynamodb_table" "passport_status" {
+  name = var.table_name
+  read_capacity  = 20
+  write_capacity = 20
+
+  hash_key = "uid"
+  attribute {
+    name = "uid"
+    type = "S"
+  }
 }
