@@ -1,5 +1,5 @@
 variable "global_name" { default = "hello_world" }
-
+variable "application_id" { }
 terraform {
   required_providers { 
     aws = {
@@ -34,6 +34,12 @@ resource "aws_lambda_function" "lambda" {
   runtime          = "nodejs14.x"
   handler          = "app.lambdaHandler"
   timeout          = 30
+
+   environment {
+    variables = {
+      APPLICATION_ID = var.application_id
+    }
+  }
 }
 
 resource "aws_iam_role" "lambda" {
