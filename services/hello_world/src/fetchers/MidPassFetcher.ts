@@ -1,36 +1,34 @@
 import axios, { AxiosResponse } from 'axios';
-
-interface passportStatus {
-  uid: string,
-  status: string;
-  internalStatus: string;
-  percent: number;
-  createdAt?: string;
-}
+import passportStatus from '../models/passportStatus';
 
 export default class MidPassFetcher {
-  application_id: string;
+  applicationId: string;
 
-  constructor(application_id: string) {
-    this.application_id = application_id;
+  status: passportStatus;
+
+  constructor(applicationId: string) {
+    this.applicationId = applicationId;
   }
 
   async getStatus(): Promise<passportStatus> {
     const response = await this.fetch();
 
-    return {
-      uid: response.data.uid,
-      status: response.data.passportStatus.name,
-      internalStatus: response.data.internalStatus.name,
-      percent: response.data.passportStatus.percent,
-      createdAt: response.data.receptionDate,
-    }
+    this.status ||=
+      {
+        uid: response.data.uid,
+        status: response.data.passportStatus.name,
+        internalStatus: response.data.internalStatus.name,
+        percent: response.data.internalStatus.percent,
+        createdAt: response.data.receptionDate,
+        updatedAt: new Date().toUTCString()
+      };
+
+    return this.status;
   }
-  
 
   private async fetch(): Promise<AxiosResponse> {
     return axios({
-      url: `https://info.midpass.ru/api/request/${this.application_id}`,
+      url: `https://info.midpass.ru/api/request/${this.applicationId}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -38,6 +38,7 @@ resource "aws_lambda_function" "lambda" {
    environment {
     variables = {
       APPLICATION_ID = var.application_id
+      TABLE_NAME = var.table_name
     }
   }
 }
@@ -126,4 +127,17 @@ resource "aws_dynamodb_table" "passport_status" {
     name = "uid"
     type = "S"
   }
+}
+
+data "aws_iam_policy_document" "dynamo" {
+  statement {
+    actions = ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem"]
+    resources = [aws_dynamodb_table.passport_status.arn]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_dynamo" {
+  name   = "DynamoDB"
+  policy = data.aws_iam_policy_document.dynamo.json
+  role   = aws_iam_role.lambda.id
 }

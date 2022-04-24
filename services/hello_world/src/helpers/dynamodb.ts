@@ -1,14 +1,10 @@
 import AWS from 'aws-sdk';
 
-export type dynamoDbData = Record<
-  string,
-  {
-    uid?: string | undefined;
-    status: string | undefined;
-    updated_at: string | undefined;
-  }
->;
-
+export type dynamoDbData = {
+  uid: string,
+  status: string,
+  updatedAt: string
+};
 
 export async function putRequest(data: dynamoDbData) {
   const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -16,9 +12,9 @@ export async function putRequest(data: dynamoDbData) {
   const params = {
     TableName: process.env.TABLE_NAME,
     Item: data
-  }
+  };
 
-  documentClient.put(params)
+  documentClient.put(params).promise();
 }
 
 export async function getRequest(uid: string): Promise<dynamoDbData> {
@@ -27,9 +23,9 @@ export async function getRequest(uid: string): Promise<dynamoDbData> {
   const params = {
     TableName: process.env.TABLE_NAME,
     Key: {
-      uid: uid
+      uid
     }
-  }
+  };
 
   return new Promise((resolve, reject) => {
     documentClient.get(params, (err, data) => {
@@ -38,6 +34,6 @@ export async function getRequest(uid: string): Promise<dynamoDbData> {
       } else {
         resolve(data.Item as dynamoDbData);
       }
-    })
-  })
+    });
+  });
 }
