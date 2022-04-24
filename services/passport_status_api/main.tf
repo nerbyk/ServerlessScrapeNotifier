@@ -1,4 +1,4 @@
-variable "global_name" { default = "hello_world" }
+variable "global_name" { default = "passport_status_api" }
 variable "table_name" { default = "passport_status" }
 variable "application_id" { }
 terraform {
@@ -83,7 +83,7 @@ resource "aws_iam_role" "lambda" {
 #   integration_method = "POST"
 # }
 
-# resource "aws_apigatewayv2_route" "get_hello_world" {
+# resource "aws_apigatewayv2_route" "passport_status_api" {
 #   api_id = aws_apigatewayv2_api.lambda.id
 #   route_key = "GET /{proxy+}"
 #   target = "integrations/${aws_apigatewayv2_integration.integration.id}"
