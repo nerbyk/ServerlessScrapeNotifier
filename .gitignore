@@ -22,8 +22,8 @@ builds/
 # Terraform artifacts
 .terraform/
 dist.zip
-*.tfstate.backup
-.terraform.tfstate.lock.info
+*.tfstate
+*.tfstate.*
 
 # Environment files
 .env
