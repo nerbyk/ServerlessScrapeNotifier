@@ -63,60 +63,6 @@ resource "aws_iam_role" "lambda" {
   POLICY
 }
 
-# resource "aws_apigatewayv2_api" "lambda" { 
-#   name = var.global_name
-#   protocol_type = "HTTP"
-# }
-
-# resource "aws_apigatewayv2_stage" "lambda" {
-#   api_id = aws_apigatewayv2_api.lambda.id 
-
-#   name = "$default"
-#   auto_deploy = true
-# }
-
-# resource "aws_apigatewayv2_integration" "integration" {
-#   api_id = aws_apigatewayv2_api.lambda.id
-
-#   integration_uri = aws_lambda_function.lambda.invoke_arn
-#   integration_type = "AWS_PROXY"
-#   integration_method = "POST"
-# }
-
-# resource "aws_apigatewayv2_route" "passport_status_api" {
-#   api_id = aws_apigatewayv2_api.lambda.id
-#   route_key = "GET /{proxy+}"
-#   target = "integrations/${aws_apigatewayv2_integration.integration.id}"
-# }
-
-# resource "aws_lambda_permission" "api_gw" {
-#   statement_id = "AllowExecutionFromAPIGateway"
-#   action       = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.lambda.function_name
-#   principal = "apigateway.amazonaws.com"
-
-#   source_arn = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
-# }
-
-resource "aws_lambda_function_url" "lambda" {
-  function_name = aws_lambda_function.lambda.arn
-  authorization_type = "NONE"
-
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET"]
-    allow_headers     = ["date", "keep-alive"]
-    expose_headers    = ["keep-alive", "date"]
-    max_age           = 86400
-  }
-}
-
-
-output "base_url" {
-  value = aws_lambda_function_url.lambda.function_url
-}
-
 resource "aws_dynamodb_table" "passport_status" {
   name = var.table_name
   read_capacity  = 20
