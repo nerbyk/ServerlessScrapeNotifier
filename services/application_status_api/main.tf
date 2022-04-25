@@ -1,4 +1,4 @@
-variable "global_name" { default = "passport_status_api" }
+variable "global_name" { default = "application_status_api" }
 variable "table_name" { default = "passport_status" }
 variable "application_id" { }
 terraform {
