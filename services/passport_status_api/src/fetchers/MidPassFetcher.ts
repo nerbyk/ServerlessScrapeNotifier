@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import passportStatus from '../models/passportStatus';
+import passportStatus from '../models/applicationStatus';
 
 export default class MidPassFetcher {
   applicationId: string;

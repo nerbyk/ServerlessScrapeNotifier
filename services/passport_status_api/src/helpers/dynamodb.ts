@@ -22,18 +22,10 @@ export async function getRequest(uid: string): Promise<dynamoDbData> {
 
   const params = {
     TableName: process.env.TABLE_NAME,
-    Key: {
-      uid
-    }
+    Key: { uid }
   };
 
-  return new Promise((resolve, reject) => {
-    documentClient.get(params, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data.Item as dynamoDbData);
-      }
-    });
-  });
+  const request_data = await documentClient.get(params).promise()
+
+  return request_data.Item as dynamoDbData;
 }

@@ -1,4 +1,4 @@
-export default interface passportStatus {
+export default interface applicationStatusData {
   uid: string,
   status: string;
   internalStatus: string;
