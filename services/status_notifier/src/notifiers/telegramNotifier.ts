@@ -11,21 +11,19 @@ export default class TelegramNotifier {
   }
 
   async notifyClient() {
-    const chatId = process.env.TELEGRAM_CLIENT_ID;
-    const text = `
-      Статус заявки ${this.responseBody.uid} изменился на ${this.responseBody.status}
-      \nСтатус заявки внутренний ${this.responseBody.internalStatus}
-      \nПроцент выполнения ${this.responseBody.percent}
-      \nДата поступления ${this.responseBody.createdAt}
-      \nПоследнее обновление ${this.responseBody.updatedAt}
-    `;
+    const text =
+      `Новый статус заявки:  ${this.responseBody.status}` +
+      `\nВнутренний статус: ${this.responseBody.internalStatus}` +
+      `\nПроцент выполнения: ${this.responseBody.percent}` +
+      `\nДата получения: ${this.responseBody.createdAt}` +
+      `\nДата последнего обновления: ${this.responseBody.updatedAt}`;
 
-    await this.sendMessage(chatId, text);
+    await this.sendMessage(text);
   }
 
-  private async sendMessage(chatId: string, text: string) {
+  private async sendMessage(text: string) {
+    const data = { chat_id: process.env.TELEGRAM_CLIENT_ID, text };
     const url = `${this.BOT_API_URL}/sendMessage`;
-    const data = { chatId, text };
 
     return axios.post(url, data);
   }

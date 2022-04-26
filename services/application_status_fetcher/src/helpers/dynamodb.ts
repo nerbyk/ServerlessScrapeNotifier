@@ -1,23 +1,18 @@
 import AWS from 'aws-sdk';
+import applicationStatusData from '../models/applicationStatus';
 
-export type dynamoDbData = {
-  uid: string,
-  status: string,
-  updatedAt: string
-};
-
-export async function putRequest(data: dynamoDbData) {
+export async function putRequest(data: applicationStatusData) {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   const params = {
     TableName: process.env.TABLE_NAME,
-    Item: data
+    Item: { updatedAt: new Date().toUTCString(), ...data }
   };
 
   documentClient.put(params).promise();
 }
 
-export async function getRequest(uid: string): Promise<dynamoDbData> {
+export async function getRequest(uid: string): Promise<applicationStatusData> {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   const params = {
@@ -27,5 +22,5 @@ export async function getRequest(uid: string): Promise<dynamoDbData> {
 
   const request_data = await documentClient.get(params).promise()
 
-  return request_data.Item as dynamoDbData;
+  return request_data.Item as applicationStatusData;
 }

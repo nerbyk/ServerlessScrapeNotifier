@@ -20,7 +20,6 @@ export default class MidPassFetcher {
         internalStatus: response.data.internalStatus.name,
         percent: response.data.internalStatus.percent,
         createdAt: response.data.receptionDate,
-        updatedAt: new Date().toUTCString()
       };
 
     return this.status;
