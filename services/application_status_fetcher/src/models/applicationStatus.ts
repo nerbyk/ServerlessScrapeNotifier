@@ -1,5 +1,5 @@
 export default interface applicationStatusData {
-  uid: string,
+  uid: string;
   status: string;
   internalStatus: string;
   percent: number;

@@ -11,16 +11,17 @@ export default class MidPassFetcher {
   }
 
   async getStatus(): Promise<passportStatus> {
-    const response = await this.fetch();
+    const response = await this.fetch().catch((error) => {
+      throw new Error(error.message);
+    });
 
-    this.status ||=
-      {
-        uid: response.data.uid,
-        status: response.data.passportStatus.name,
-        internalStatus: response.data.internalStatus.name,
-        percent: response.data.internalStatus.percent,
-        createdAt: response.data.receptionDate,
-      };
+    this.status ||= {
+      uid: response.data.uid,
+      status: response.data.passportStatus.name,
+      internalStatus: response.data.internalStatus.name,
+      percent: response.data.internalStatus.percent,
+      createdAt: response.data.receptionDate,
+    };
 
     return this.status;
   }
@@ -30,8 +31,9 @@ export default class MidPassFetcher {
       url: `https://info.midpass.ru/api/request/${this.applicationId}`,
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
+      timeout: 10 * 1000,
     });
   }
 }

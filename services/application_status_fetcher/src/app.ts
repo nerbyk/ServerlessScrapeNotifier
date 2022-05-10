@@ -1,18 +1,27 @@
-import AWS from 'aws-sdk';
 import MidPassFetcher from './fetchers/MidPassFetcher';
-import { getRequest, putRequest } from './helpers/dynamodb';
+import { DBClient } from './helpers/DBClient';
 import applicationStatusData from './models/applicationStatus';
 
-AWS.config.update({ region: 'eu-central-1' });
+export const lambdaHandler = async (event) => {
+  const applicationId = event.applicationId || process.env.APPLICATION_ID;
 
-export const lambdaHandler = async () => {
-  const statusFetcher = new MidPassFetcher(process.env.APPLICATION_ID);
-  const newStatusData: applicationStatusData = await statusFetcher.getStatus();
-  const oldStatusData: applicationStatusData = await getRequest(newStatusData.uid);
+  const statusFetcher = new MidPassFetcher(applicationId);
+  const dbClient = new DBClient('eu-central-1');
 
-  if (oldStatusData?.status !== newStatusData.status) {
-    await putRequest(newStatusData)
-  }
+  const newStatus: Promise<applicationStatusData> = new Promise((resolve) =>
+    resolve(statusFetcher.getStatus())
+  );
+  const oldStatus: Promise<applicationStatusData> = new Promise((resolve) =>
+    resolve(dbClient.getRequest(applicationId))
+  );
+
+  const [newStatusResult, oldStatusResult] = await Promise.all([
+    newStatus,
+    oldStatus,
+  ]);
+
+  if (oldStatusResult?.status !== newStatusResult.status)
+    await dbClient.putRequest(newStatusResult);
 };
 
-lambdaHandler()
+lambdaHandler({});
