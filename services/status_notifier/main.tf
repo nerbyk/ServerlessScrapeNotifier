@@ -44,7 +44,7 @@ resource "aws_lambda_function" "lambda" {
 
   runtime = "nodejs14.x"
   handler = "app.lambdaHandler"
-  timeout = 30
+  timeout = 60
 
   environment {
     variables = {
@@ -83,13 +83,10 @@ resource "aws_lambda_event_source_mapping" "passport_status" {
 data "aws_iam_policy_document" "dynamodb" {
   statement {
     actions = [
-      "dynamodb:GetItem", 
-      "dynamodb:GetRecords",
-      "dynamodb:Scan",
-      "dynamodb:DescribeStream",
-      "dynamodb:ListStreams",
-      "dynamodb:ListShards",
-      "dynamodb:GetShardIterator"
+      "dynamodb:GetRecords", 
+      "dynamodb:GetShardIterator", 
+      "dynamodb:DescribeStream", 
+      "dynamodb:ListStreams"
     ]
     resources = [
       data.terraform_remote_state.database.outputs.database_arn,
