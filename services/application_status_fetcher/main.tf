@@ -36,10 +36,10 @@ resource "aws_lambda_function" "lambda" {
   
   source_code_hash = filebase64sha256(data.archive_file.lambda_zip.output_path)
   memory_size      = 128
+  timeout          = 60
   
   runtime          = "nodejs14.x"
   handler          = "app.lambdaHandler"
-  timeout          = 30
 
    environment {
     variables = {
