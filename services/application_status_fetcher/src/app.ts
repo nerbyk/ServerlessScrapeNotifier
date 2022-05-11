@@ -5,11 +5,11 @@ import applicationStatusData from './models/applicationStatus';
 export const lambdaHandler = async (event) => {
   const applicationId = event.applicationId || process.env.APPLICATION_ID;
 
-  const statusFetcher = new MidPassFetcher(applicationId);
+  const statusFetcher = new MidPassFetcher();
   const dbClient = new DBClient('eu-central-1');
 
   const newStatus: Promise<applicationStatusData> = new Promise((resolve) =>
-    resolve(statusFetcher.getStatus())
+    resolve(statusFetcher.getStatus(applicationId))
   );
   const oldStatus: Promise<applicationStatusData> = new Promise((resolve) =>
     resolve(dbClient.getRequest(applicationId))
@@ -20,8 +20,6 @@ export const lambdaHandler = async (event) => {
     oldStatus,
   ]);
 
-  if (oldStatusResult?.status !== newStatusResult.status)
+  if (oldStatusResult?.status !== newStatusResult?.status)
     await dbClient.putRequest(newStatusResult);
 };
-
-lambdaHandler({});
