@@ -2,6 +2,5 @@ package:
 	rm -rf node_mudles
 	rm -rf dist 
 	rm -rf builds 
-	yarn 
-	yarn tsc 
-	cp -R ./node_modules ./dist
+	pnpm install
+	./node_modules/.bin/esbuild src/app.ts --bundle --outfile=dist/app.js --platform="node"

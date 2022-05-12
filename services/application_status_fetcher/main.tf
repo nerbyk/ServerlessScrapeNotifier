@@ -25,7 +25,7 @@ provider "aws" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir = "./dist"
+  source_file = "./dist/app.js"
   output_path = "./builds/lambda"
 }
 
