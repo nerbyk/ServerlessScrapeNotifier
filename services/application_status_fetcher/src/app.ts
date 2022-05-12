@@ -1,19 +1,15 @@
-import MidPassFetcher from './fetchers/MidPassFetcher';
+import { MidPassFetcher, MidPassStatus } from './fetchers/midPassFetcher';
 import { DBClient } from './helpers/DBClient';
-import applicationStatusData from './models/applicationStatus';
+import { ApplicationStatus } from './models/applicationStatus';
 
-export const lambdaHandler = async (event) => {
-  const applicationId = event.applicationId || process.env.APPLICATION_ID;
 
-  const statusFetcher = new MidPassFetcher();
-  const dbClient = new DBClient('eu-central-1');
+const statusFetcher = new MidPassFetcher();
+const dbClient = new DBClient({ region: 'eu-central-1', tableName: process.env.TABLE_NAME });
+const applicationId = process.env.APPLICATION_ID;
 
-  const newStatus: Promise<applicationStatusData> = new Promise((resolve) =>
-    resolve(statusFetcher.getStatus(applicationId))
-  );
-  const oldStatus: Promise<applicationStatusData> = new Promise((resolve) =>
-    resolve(dbClient.getRequest(applicationId))
-  );
+export const lambdaHandler = async () => {
+  const newStatus: Promise<MidPassStatus> = statusFetcher.getStatus(applicationId);
+  const oldStatus: Promise<ApplicationStatus> = dbClient.getRequest(applicationId);
 
   const [newStatusResult, oldStatusResult] = await Promise.all([
     newStatus,

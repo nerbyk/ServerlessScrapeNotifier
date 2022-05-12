@@ -1,17 +1,23 @@
-import AWS from 'aws-sdk';
-import applicationStatusData from '../models/applicationStatus';
+import { ApplicationStatus } from '../models/applicationStatus';
+import { MidPassStatus } from '../fetchers/midPassFetcher';
+import * as AWS from 'aws-sdk';
 
+type ConnectionData = {
+  region: string;
+  tableName: string;
+}
 export class DBClient {
   documentClient: AWS.DynamoDB.DocumentClient;
-  tableName: string = process.env.TABLE_NAME;
+  tableName: string;
 
-  constructor(region) {
+  constructor(connectionData: ConnectionData) {
     this.documentClient = new AWS.DynamoDB.DocumentClient({
-      region: region,
+      region: connectionData.region,
     });
+    this.tableName = connectionData.tableName;
   }
 
-  async putRequest(data: applicationStatusData) {
+  async putRequest(data: MidPassStatus): Promise<void> {
     const params = {
       TableName: this.tableName,
       Item: { ...data, updatedAt: new Date().toISOString() },
@@ -20,7 +26,7 @@ export class DBClient {
     await this.documentClient.put(params).promise();
   }
 
-  async getRequest(uid: string): Promise<applicationStatusData> {
+  async getRequest(uid: string): Promise<ApplicationStatus> {
     const params = {
       TableName: this.tableName,
       Key: { uid },
@@ -28,6 +34,6 @@ export class DBClient {
 
     const response = await this.documentClient.get(params).promise();
 
-    return response.Item as applicationStatusData;
+    return response.Item as ApplicationStatus;
   }
 }
