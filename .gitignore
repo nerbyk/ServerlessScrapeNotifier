@@ -24,6 +24,7 @@ builds/
 dist.zip
 *.tfstate
 *.tfstate.*
+auto.tfvars
 
 # Environment files
 .env
